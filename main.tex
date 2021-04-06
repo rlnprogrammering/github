@@ -1,0 +1,112 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Linux & C programming - 1st assignment}
+\author{s205132 / Rasmus Lundahl Nielsen }
+\date{01/10 - 2020}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{setspace}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.8em}
+\setstretch{1.25}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Intro to the problem}
+
+1. Create a folder that is accessible by you and one friend only (my group mate).
+
+2. The folder should be hidden from everyone else, except your one friend that has access enabled.
+
+3. The "frenemy" should not be able to access or see any content in the hidden folder.
+
+4. Test with 2 others. A "frenemy" who will have no access and a friend that will have access.
+
+\section{Hypothesis of possible solution}
+
+A possible solution for this problem, would be to create a group with the one friend that i want to share my folder with. After the group has been created, i can now create a folder that is only accessible by a group. I will portray this in steps down below :
+
+1. First create a group "group1".
+
+2. Add a group member i want to share my folder with.
+
+3. Give ownership of the folder to your group: "group1".
+
+4. Now give access to the group member, but restrain access from everyone else.
+
+\section{Solution in steps}
+(Note: '--' means i am writing a commando in the prompt)
+
+1. Create a group named 'holdet': \newline
+-- sudo groupadd holdet
+
+2. Adding user s205119 to the group 'holdet'': \newline
+-- sudo usermod -a -G holdet s205119
+
+3. Navigate to the directory of the folder: \newline
+-- cd /home/s205132 \newline
+(in this directory i have a folder called 'hidden')
+
+\begin{figure}[h!]
+\includegraphics[scale=1]{s205132 dir.PNG}
+\end{figure}
+
+4. Give ownership of the directory to the group 'holdet' \newline
+-- sudo chown s205312:holdet hidden
+
+5. Use chmod to give access to your group, but not the public: \newline
+-- chmod 770 hidden
+
+
+\section{Tests}
+Now i want to show by tests that the above commands from previous section has in fact worked the way i intended it to do so.
+
+First of i want to show that the user 's205119' i added to the group 'holdet' is actually a registered user. Im going to show that with the following command:
+
+\begin{figure}[h!]
+\includegraphics[scale=1]{groups.PNG}
+\end{figure}
+
+Now i want to show that the permissions and ownership i gave to the directory 'hidden' is given to the group 'holdet' and that the people in this group has rwx (read, write, execute) permission:
+
+\begin{figure}[h!]
+\includegraphics[scale=1]{chmod.PNG}
+\end{figure}
+
+As we can see from the ls -l command in the middle of the picture above, the directory 'hidden' has ownership by 'holdet'. On the left side we can see the accessibility people from this group has, and we can in fact state they have 'rwx' permission, just as they should.
+
+Now lets test this in practice. My Friend, the user 's205119' has tried to access the hidden folder which should be able for him, me and nobody else. Let's see if he can access:
+
+\begin{figure}[h!]
+\includegraphics[scale=1]{friend.PNG}
+\end{figure}
+
+As we can see from the above picture, he got full access to the directory, and the file within it. Now let's try with our frenemy. This time it's user 205129 trying to enter the 'hidden' directory, which he should not have access to:
+\begin{figure}[h!]
+\includegraphics[scale=1]{frenemy.PNG}
+\end{figure}
+
+As we can see in the example from the picture above, he was denied access to the directory. I have therefore successfully completed the task.
+
+\section{Explain the difference from a /tmp folder compared with my method}
+The tmp folder is used to temporarily storage for programs and/or people to use.Linux OS itself uses this folder to store temporary files. \newline
+The content of this folder is automatically removed on reboot of the Linux system.
+
+Therefore it wouldn't be a smart thing to create anything that you want to keep for a longer period of time in this group, as it will get removed on reboot.
+
+To answer the question, we must first look at the permission of the /tmp directory. \newline
+The default permission of the /tmp folder is 1777 which in ls shows as (drwxrwxrwt). \newline
+This means the folder is open and accessible for anyone that wants to enter it, and they can do whatever they like with the files within it, but the 't' at the end means only the creator of the file can delete it. 
+
+Therefore if we created the same kind of folder as we did in the previous section, in this /tmp folder, it would not only be created as a temporary file, it would also have the permission 1777, where we wanted it to have the permission 770.
+
+
+
+
+\end{document}
